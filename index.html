@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<title>Ultra Report System</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+}
+
+body{
+height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+background:linear-gradient(135deg,#4facfe,#00f2fe);
+}
+
+/* main card */
+
+.container{
+
+width:420px;
+padding:40px;
+border-radius:20px;
+
+background:rgba(255,255,255,0.15);
+backdrop-filter:blur(12px);
+
+box-shadow:0 20px 40px rgba(0,0,0,0.2);
+
+text-align:center;
+color:white;
+
+}
+
+/* title */
+
+h1{
+font-weight:600;
+margin-bottom:10px;
+}
+
+.subtitle{
+font-size:14px;
+opacity:0.8;
+margin-bottom:30px;
+}
+
+/* button container */
+
+.btn-box{
+display:flex;
+flex-direction:column;
+gap:15px;
+}
+
+/* buttons */
+
+button{
+
+padding:14px;
+border:none;
+border-radius:10px;
+
+font-size:16px;
+font-weight:500;
+
+cursor:pointer;
+
+display:flex;
+align-items:center;
+justify-content:center;
+gap:10px;
+
+transition:0.3s;
+
+}
+
+/* user button */
+
+.user-btn{
+
+background:white;
+color:#0072ff;
+
+}
+
+.user-btn:hover{
+
+transform:translateY(-3px);
+box-shadow:0 8px 20px rgba(0,0,0,0.2);
+
+}
+
+/* admin button */
+
+.admin-btn{
+
+background:#0072ff;
+color:white;
+
+}
+
+.admin-btn:hover{
+
+transform:translateY(-3px);
+box-shadow:0 8px 20px rgba(0,0,0,0.2);
+
+}
+
+/* footer */
+
+.footer{
+
+margin-top:25px;
+font-size:12px;
+opacity:0.8;
+
+}
+
+/* responsive */
+
+@media(max-width:500px){
+
+.container{
+width:90%;
+padding:30px;
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Ultra Report System</h1>
+
+<p class="subtitle">Dental Camp Report Management</p>
+
+<div class="btn-box">
+
+<button class="user-btn" onclick="user()">
+👤 User Login
+</button>
+
+<button class="admin-btn" onclick="admin()">
+🔐 Admin Login
+</button>
+
+</div>
+
+<div class="footer">
+© Ultra College System
+</div>
+
+</div>
+
+<script>
+
+function user(){
+location.href="userlogin.html"
+}
+
+function admin(){
+location.href="adminlogin.html"
+}
+
+</script>
+
+</body>
+</html>

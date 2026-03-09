@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<title>Admin Login</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+}
+
+body{
+
+height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+
+background:linear-gradient(135deg,#4facfe,#00f2fe);
+
+}
+
+/* login card */
+
+.box{
+
+width:360px;
+padding:40px;
+border-radius:18px;
+
+background:rgba(255,255,255,0.2);
+backdrop-filter:blur(12px);
+
+box-shadow:0 15px 35px rgba(0,0,0,0.25);
+
+text-align:center;
+color:white;
+
+}
+
+/* title */
+
+h2{
+margin-bottom:25px;
+font-weight:600;
+}
+
+/* inputs */
+
+input{
+
+width:100%;
+padding:12px;
+margin:10px 0;
+
+border-radius:8px;
+border:none;
+
+font-size:14px;
+
+}
+
+/* login button */
+
+button{
+
+width:100%;
+padding:13px;
+
+margin-top:10px;
+
+border:none;
+border-radius:8px;
+
+background:#0072ff;
+color:white;
+
+font-size:15px;
+font-weight:500;
+
+cursor:pointer;
+transition:0.3s;
+
+}
+
+button:hover{
+
+background:#0056d6;
+transform:translateY(-2px);
+
+}
+
+/* error message */
+
+#msg{
+
+margin-top:12px;
+color:#ffdede;
+font-size:14px;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="box">
+
+<h2>🔐 Admin Login</h2>
+
+<input id="user" placeholder="Username">
+
+<input id="pass" type="password" placeholder="Password">
+
+<button onclick="login()">Login</button>
+
+<p id="msg"></p>
+
+</div>
+
+<script>
+
+async function login(){
+
+const u=document.getElementById("user").value
+const p=document.getElementById("pass").value
+
+const res = await fetch("/api/admin/login",{
+
+method:"POST",
+headers:{ "Content-Type":"application/json" },
+
+body:JSON.stringify({
+username:u,
+password:p
+})
+
+})
+
+const data = await res.json()
+
+if(data.success){
+    
+location.href="/admin"
+
+}else{
+
+document.getElementById("msg").innerText="Invalid Admin Credentials"
+
+}
+
+}
+</script>
+
+</body>
+</html>

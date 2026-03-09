@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Admin Dashboard</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #4facfe, #00f2fe);
+      min-height: 100vh;
+      padding: 40px;
+    }
+
+    .container {
+      background: white;
+      border-radius: 15px;
+      padding: 30px;
+      max-width: 900px;
+      margin: auto;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    h3 {
+      margin-top: 20px;
+      color: #444;
+    }
+
+    .form-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+      flex-wrap: wrap;
+    }
+
+    input {
+      flex: 1;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      font-size: 14px;
+    }
+
+    .add-btn {
+      padding: 12px 18px;
+      background: #4facfe;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 25px;
+    }
+
+    thead {
+      background: #4facfe;
+      color: white;
+    }
+
+    th {
+      padding: 12px;
+    }
+
+    td {
+      padding: 12px;
+      text-align: center;
+      border-bottom: 1px solid #eee;
+    }
+
+    .edit-btn {
+      background: #ffa502;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .delete-btn {
+      background: #ff4757;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .download-btn {
+      background: #2ed573;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <h2>Admin Dashboard</h2>
+
+    <!-- ADD USER -->
+    <h3>Add User</h3>
+    <div class="form-group">
+      <input id="username" placeholder="Username">
+      <input id="password" placeholder="Password">
+      <button class="add-btn" onclick="addUser()">Add User</button>
+    </div>
+
+    <!-- USER LIST -->
+    <h3>User List</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>No</th>
+          <th>Username</th>
+          <th>Password</th>
+          <th>Created</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="table"></tbody>
+    </table>
+
+    <!-- REPORT LIST -->
+    <h3>Generated Reports</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>No</th>
+          <th>User</th>
+          <th>Document</th>
+          <th>Date</th>
+          <th>Time</th>
+          <th>Download</th>
+        </tr>
+      </thead>
+      <tbody id="reportTable"></tbody>
+    </table>
+
+  </div>
+
+  <script>
+    // ================== USERS ==================
+    async function load() {
+      const res = await fetch("/api/admin/users");
+      const users = await res.json();
+
+      const table = document.getElementById("table");
+      table.innerHTML = "";
+
+      users.forEach((u, i) => {
+        table.innerHTML += `
+        <tr>
+          <td>${i + 1}</td>
+          <td>${u.username}</td>
+          <td>${u.password}</td>
+          <td>${u.created}</td>
+          <td>
+            <button class="edit-btn" onclick="edit(${i})">Edit</button>
+            <button class="delete-btn" onclick="del(${i})">Delete</button>
+          </td>
+        </tr>
+        `;
+      });
+    }
+
+    async function addUser() {
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+
+      const res = await fetch("/api/admin/adduser", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password })
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        alert("User Added");
+        load();
+      } else {
+        alert("Error");
+      }
+    }
+
+    async function del(i) {
+      await fetch("/api/admin/delete/" + i, { method: "DELETE" });
+      load();
+    }
+
+    async function edit(i) {
+      const username = prompt("New Username");
+      const password = prompt("New Password");
+
+      await fetch("/api/admin/edit/" + i, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password })
+      });
+
+      load();
+    }
+
+    load();
+
+    // ================== REPORTS ==================
+    async function loadReports() {
+      const res = await fetch("/api/admin/reports");
+      const reports = await res.json();
+
+      const table = document.getElementById("reportTable");
+      table.innerHTML = "";
+
+      reports.forEach((r, i) => {
+        table.innerHTML += `
+        <tr>
+          <td>${i + 1}</td>
+          <td>${r.username}</td>
+          <td>${r.filename}</td>
+          <td>${r.created_date}</td>
+          <td>${r.created_time}</td>
+          <td><a class="download-btn" href="/reports/${r.filename}" download>Download</a></td>
+        </tr>
+        `;
+      });
+    }
+
+    loadReports();
+  </script>
+
+</body>
+
+</html>
