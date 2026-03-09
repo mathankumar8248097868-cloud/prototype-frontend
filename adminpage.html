@@ -169,7 +169,7 @@
   <script>
     // ================== USERS ==================
     async function load() {
-      const res = await fetch("/api/admin/users");
+      const res = await fetch("https://prototype-backend-657r.onrender.com/api/admin/users");
       const users = await res.json();
 
       const table = document.getElementById("table");
@@ -195,7 +195,7 @@
       const username = document.getElementById("username").value;
       const password = document.getElementById("password").value;
 
-      const res = await fetch("/api/admin/adduser", {
+      const res = await fetch("https://prototype-backend-657r.onrender.com/api/admin/adduser", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password })
@@ -211,7 +211,7 @@
     }
 
     async function del(i) {
-      await fetch("/api/admin/delete/" + i, { method: "DELETE" });
+      await fetch("https://prototype-backend-657r.onrender.com/api/admin/delete/" + i, { method: "DELETE" });
       load();
     }
 
@@ -219,7 +219,7 @@
       const username = prompt("New Username");
       const password = prompt("New Password");
 
-      await fetch("/api/admin/edit/" + i, {
+      await fetch("https://prototype-backend-657r.onrender.com/api/admin/edit/" + i, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password })
@@ -232,7 +232,7 @@
 
     // ================== REPORTS ==================
     async function loadReports() {
-      const res = await fetch("/api/admin/reports");
+      const res = await fetch("https://prototype-backend-657r.onrender.com/api/admin/reports");
       const reports = await res.json();
 
       const table = document.getElementById("reportTable");
