@@ -46,7 +46,7 @@ document.getElementById("form").addEventListener("submit", async function(e){
         formData.append("extraTreatment", JSON.stringify(extraTreatment));
     }
 
-    const response = await fetch("http://localhost:5000/api/report/generate", {
+    const response = await fetch("https://prototype-backend-657r.onrender.com/api/report/generate", {
       method: "POST",
       body: formData
     });
