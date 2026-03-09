@@ -136,15 +136,13 @@ const u=document.getElementById("user").value
 const p=document.getElementById("pass").value
 
 const res = await fetch("https://prototype-backend-657r.onrender.com/api/admin/login",{
-
 method:"POST",
+credentials:"include",
 headers:{ "Content-Type":"application/json" },
-
 body:JSON.stringify({
 username:u,
 password:p
 })
-
 })
 
 const data = await res.json()
