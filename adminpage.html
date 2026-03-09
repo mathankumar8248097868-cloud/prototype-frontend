@@ -170,6 +170,7 @@
     // ================== USERS ==================
     async function load() {
       const res = await fetch("https://prototype-backend-657r.onrender.com/api/admin/users");
+      credentials:"include"
       const users = await res.json();
 
       const table = document.getElementById("table");
@@ -197,6 +198,7 @@
 
       const res = await fetch("https://prototype-backend-657r.onrender.com/api/admin/adduser", {
         method: "POST",
+        credentials:"include"
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password })
       });
@@ -211,7 +213,10 @@
     }
 
     async function del(i) {
-      await fetch("https://prototype-backend-657r.onrender.com/api/admin/delete/" + i, { method: "DELETE" });
+      await fetch("https://prototype-backend-657r.onrender.com/api/admin/delete/" + i, {
+      method: "DELETE",
+      credentials:"include"
+    });
       load();
     }
 
@@ -221,6 +226,7 @@
 
       await fetch("https://prototype-backend-657r.onrender.com/api/admin/edit/" + i, {
         method: "PUT",
+        credentials:"include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password })
       });
@@ -232,7 +238,9 @@
 
     // ================== REPORTS ==================
     async function loadReports() {
-      const res = await fetch("https://prototype-backend-657r.onrender.com/api/admin/reports");
+      const res = await fetch("https://prototype-backend-657r.onrender.com/api/admin/reports",{
+      credentials:"include"
+      });
       const reports = await res.json();
 
       const table = document.getElementById("reportTable");
