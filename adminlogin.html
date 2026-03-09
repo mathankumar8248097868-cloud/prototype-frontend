@@ -135,7 +135,7 @@ async function login(){
 const u=document.getElementById("user").value
 const p=document.getElementById("pass").value
 
-const res = await fetch("/api/admin/login",{
+const res = await fetch("https://prototype-backend-657r.onrender.com/api/admin/login",{
 
 method:"POST",
 headers:{ "Content-Type":"application/json" },
