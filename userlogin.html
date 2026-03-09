@@ -139,7 +139,7 @@ async function login(){
 const u=document.getElementById("username").value
 const p=document.getElementById("password").value
 
-const res = await fetch("/api/login",{
+const res = await fetch("https://prototype-backend-657r.onrender.com/api/login",{
 
 method:"POST",
 headers:{ "Content-Type":"application/json" },
