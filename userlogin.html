@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html>
 <head>
 <title>User Login</title>
@@ -18,98 +17,61 @@ font-family:'Poppins',sans-serif;
 }
 
 body{
-
 height:100vh;
 display:flex;
 align-items:center;
 justify-content:center;
-
 background:linear-gradient(135deg,#00c6ff,#0072ff);
-
 }
-
-/* login card */
 
 .box{
-
 width:360px;
 padding:40px;
-
 border-radius:18px;
-
 background:rgba(255,255,255,0.2);
 backdrop-filter:blur(12px);
-
 box-shadow:0 15px 35px rgba(0,0,0,0.25);
-
 text-align:center;
 color:white;
-
 }
-
-/* title */
 
 h2{
-
 margin-bottom:25px;
 font-weight:600;
-
 }
-
-/* inputs */
 
 input{
-
 width:100%;
 padding:12px;
-
 margin:10px 0;
-
 border:none;
 border-radius:8px;
-
 font-size:14px;
-
 }
 
-/* login button */
-
 button{
-
 width:100%;
 padding:13px;
-
 margin-top:10px;
-
 border:none;
 border-radius:8px;
-
 background:#ffffff;
 color:#0072ff;
-
 font-size:15px;
 font-weight:600;
-
 cursor:pointer;
 transition:0.3s;
-
 }
 
 button:hover{
-
 transform:translateY(-2px);
 box-shadow:0 8px 20px rgba(0,0,0,0.2);
-
 }
 
-/* message */
-
 #msg{
-
 margin-top:12px;
 color:#ffdede;
 font-size:14px;
-
 }
 
 </style>
@@ -142,13 +104,15 @@ const p=document.getElementById("password").value
 const res = await fetch("https://prototype-backend-657r.onrender.com/api/login",{
 
 method:"POST",
-headers:{ "Content-Type":"application/json" },
+credentials:"include",
+
+headers:{
+"Content-Type":"application/json"
+},
 
 body:JSON.stringify({
-
 username:u,
 password:p
-
 })
 
 })
@@ -157,7 +121,7 @@ const data = await res.json()
 
 if(data.success){
 
-location.href="https://prototype-backend-657r.onrender.com/report"
+location.href="https://mathankumar8248097868-cloud.github.io/prototype-frontend/report.html"
 
 }else{
 
