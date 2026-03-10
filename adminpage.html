@@ -167,6 +167,7 @@ display:inline-block;
 <th>Date</th>
 <th>Time</th>
 <th>Download</th>
+<th>Action</th>
 </tr>
 </thead>
 
@@ -334,11 +335,30 @@ Download
 </a>
 </td>
 
+<td>
+<button class="delete-btn" onclick="delReport(${r.id})">Delete</button>
+</td>
+
 </tr>
 
 `;
 
 });
+
+}
+
+// ================= DELETE REPORT =================
+
+async function delReport(id){
+
+await fetch("https://prototype-backend-657r.onrender.com/api/admin/reports/delete/"+id,{
+
+method:"DELETE",
+credentials:"include"
+
+});
+
+loadReports();
 
 }
 
