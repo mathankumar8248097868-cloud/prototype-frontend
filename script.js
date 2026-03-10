@@ -47,9 +47,10 @@ document.getElementById("form").addEventListener("submit", async function(e){
     }
 
     const response = await fetch("https://prototype-backend-657r.onrender.com/api/report/generate", {
-      method: "POST",
-      body: formData
-    });
+        method: "POST",
+        credentials: "include",   // ← ADD THIS LINE
+        body: formData
+    })
     const blob = await response.blob();
     const link = document.createElement("a");
     link.href = window.URL.createObjectURL(blob);
