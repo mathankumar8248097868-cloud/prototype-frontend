@@ -86,13 +86,41 @@ footer{ background:var(--dark); color:rgba(255,255,255,0.45); padding:18px 36px;
 </footer>
 
 <script>
-async function login(){
-  const u=document.getElementById("username").value, p=document.getElementById("password").value;
-  const res=await fetch("https://prototype-backend-657r.onrender.com/api/login",{method:"POST",credentials:"include",headers:{"Content-Type":"application/json"},body:JSON.stringify({username:u,password:p})});
-  const data=await res.json();
-  if(data.success){ location.href="https://mathankumar8248097868-cloud.github.io/prototype-frontend/report.html"; }
-  else{ document.getElementById("msg").innerText="Invalid Username or Password"; }
+const BASE = "https://prototype-backend-657r.onrender.com";
+
+async function login() {
+  const u = document.getElementById("username").value.trim();
+  const p = document.getElementById("password").value.trim();
+  if (!u || !p) { document.getElementById("msg").innerText = "Please fill all fields"; return; }
+
+  document.querySelector("button").textContent = "Logging in...";
+  document.querySelector("button").disabled = true;
+
+  try {
+    const res = await fetch(BASE + "/api/login", {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username: u, password: p })
+    });
+    const data = await res.json();
+    if (data.success) {
+      // ✅ Redirect to BACKEND protected route — not GitHub Pages
+      window.location.href = BASE + "/page/report";
+    } else {
+      document.getElementById("msg").innerText = "Invalid Username or Password";
+      document.querySelector("button").textContent = "Login";
+      document.querySelector("button").disabled = false;
+    }
+  } catch (err) {
+    document.getElementById("msg").innerText = "Server error. Try again.";
+    document.querySelector("button").textContent = "Login";
+    document.querySelector("button").disabled = false;
+  }
 }
+
+// Allow Enter key to submit
+document.addEventListener("keydown", (e) => { if (e.key === "Enter") login(); });
 </script>
 </body>
 </html>
