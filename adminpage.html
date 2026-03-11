@@ -73,11 +73,11 @@ const BASE = "https://prototype-backend-657r.onrender.com";
       .edit-btn{ background:#ff9f1a; color:white; border:none; padding:5px 11px; border-radius:6px; cursor:pointer; font-size:12px; margin:2px; }
       .delete-btn{ background:#ff4757; color:white; border:none; padding:5px 11px; border-radius:6px; cursor:pointer; font-size:12px; margin:2px; }
       .download-btn{ background:#2ed573; color:white; border:none; padding:5px 11px; border-radius:6px; cursor:pointer; font-size:12px; }
-      footer{ background:var(--dark); color:rgba(255,255,255,0.45); padding:18px 36px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-top:0; }
-      .footer-left{ font-size:13px; }
-      .footer-left strong{ color:var(--blue1); }
+      footer{ background:var(--dark); color:rgba(255,255,255,0.45); padding:18px 36px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; }
+      .footer-left{ font-size:13px; display:flex; align-items:center; gap:8px; }
+      .footer-left strong{ color:var(--blue1); font-weight:600; }
       .footer-right{ display:flex; gap:18px; }
-      .footer-right a{ color:rgba(255,255,255,0.35); text-decoration:none; font-size:12px; }
+      .footer-right a{ color:rgba(255,255,255,0.35); text-decoration:none; font-size:12px; transition:color 0.2s; }
       .footer-right a:hover{ color:var(--blue1); }
     </style>
 
@@ -123,7 +123,7 @@ const BASE = "https://prototype-backend-657r.onrender.com";
     </div>
 
     <footer>
-      <div class="footer-left">© 2026 <strong>Ultra College</strong> — Dental Camp Report System</div>
+      <div class="footer-left"><span style="width:6px;height:6px;background:var(--blue1);border-radius:50%;display:inline-block;flex-shrink:0"></span>&nbsp;© 2026 <strong>Ultra College</strong> — Dental Camp Report System</div>
       <div class="footer-right">
         <a href="index.html">Home</a>
         <a href="userlogin.html">User Login</a>
@@ -135,6 +135,32 @@ const BASE = "https://prototype-backend-657r.onrender.com";
   loadUsers();
   loadReports();
 })();
+
+// ── Format helpers ────────────────────────────────────────────────────────────
+function formatDate(raw) {
+  if (!raw) return "-";
+  const d = new Date(raw);
+  if (isNaN(d)) return raw;
+  const dd = String(d.getUTCDate()).padStart(2, "0");
+  const mm = String(d.getUTCMonth() + 1).padStart(2, "0");
+  const yyyy = d.getUTCFullYear();
+  return `${dd}-${mm}-${yyyy}`;
+}
+
+function formatTime(raw) {
+  if (!raw) return "-";
+  const parts = String(raw).split(":");
+  if (parts.length >= 2) {
+    const hh = parts[0].padStart(2, "0");
+    const min = parts[1].padStart(2, "0");
+    const secRaw = parts[2] ? parts[2].split(".")[0].padStart(2, "0") : "00";
+    const h = parseInt(hh);
+    const ampm = h >= 12 ? "PM" : "AM";
+    const h12 = String(h % 12 || 12).padStart(2, "0");
+    return `${h12}:${min}:${secRaw} ${ampm}`;
+  }
+  return raw;
+}
 
 async function doLogout() {
   await fetch(BASE + "/api/admin/logout", { method: "POST", credentials: "include" });
@@ -188,7 +214,7 @@ async function loadReports() {
   const t = document.getElementById("reportTable"); t.innerHTML = "";
   reports.forEach((r, i) => {
     t.innerHTML += `<tr><td>${i+1}</td><td>${r.username}</td><td>${r.filename}</td>
-      <td>${r.created_date}</td><td>${r.created_time}</td>
+      <td>${formatDate(r.created_date)}</td><td>${formatTime(r.created_time)}</td>
       <td><button class="download-btn" onclick="dlReport('${r.filename}')">⬇ Download</button></td>
       <td><button class="delete-btn" onclick="delReport('${r.filename}')">Delete</button></td></tr>`;
   });
