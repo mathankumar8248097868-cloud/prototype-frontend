@@ -7,6 +7,19 @@
 <style>
 *{ margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
 :root{ --blue1:#4facfe; --blue2:#00c6ff; --dark:#1a2340; --accent:#f7c948; }
+
+/* ── AUTH GUARD OVERLAY ── */
+#authOverlay{
+  position:fixed; inset:0; background:linear-gradient(135deg,var(--dark),#2a3a60);
+  display:flex; align-items:center; justify-content:center; z-index:9999;
+}
+#authOverlay .spinner{
+  width:48px; height:48px; border:4px solid rgba(255,255,255,0.2);
+  border-top-color:var(--blue1); border-radius:50%; animation:spin 0.8s linear infinite;
+}
+@keyframes spin{ to{ transform:rotate(360deg); } }
+body.auth-pending > *:not(#authOverlay){ visibility:hidden; }
+
 body{ background:linear-gradient(135deg,var(--blue1),var(--blue2)); min-height:100vh; display:flex; flex-direction:column; }
 
 /* ── HEADER ── */
@@ -20,6 +33,8 @@ nav{ display:flex; gap:4px; align-items:center; }
 .nav-link:hover{ background:rgba(255,255,255,0.1); color:white; }
 .nav-link.active{ background:rgba(79,172,254,0.18); color:var(--blue1); }
 .nav-divider{ width:1px; height:22px; background:rgba(255,255,255,0.12); margin:0 4px; }
+.logout-btn{ padding:8px 15px; border:1px solid rgba(255,80,80,0.4); border-radius:8px; font-size:13px; font-weight:500; cursor:pointer; background:transparent; color:rgba(255,120,120,0.8); transition:all 0.2s; }
+.logout-btn:hover{ background:rgba(255,80,80,0.15); color:#ff6b6b; border-color:rgba(255,80,80,0.7); }
 
 /* ── MAIN ── */
 .page{ padding:36px; flex:1; }
@@ -52,7 +67,10 @@ footer{ background:var(--dark); color:rgba(255,255,255,0.45); padding:18px 36px;
 .footer-right a:hover{ color:var(--blue1); }
 </style>
 </head>
-<body>
+<body class="auth-pending">
+
+<!-- ── AUTH GUARD OVERLAY ── -->
+<div id="authOverlay"><div class="spinner"></div></div>
 
 <!-- ── HEADER ── -->
 <header>
@@ -63,8 +81,9 @@ footer{ background:var(--dark); color:rgba(255,255,255,0.45); padding:18px 36px;
   <nav>
     <a class="nav-link" href="index.html">🏠 Home</a>
     <div class="nav-divider"></div>
-    <a class="nav-link" href="userlogin.html">👤 User Login</a>
-    <a class="nav-link active" href="adminlogin.html">🔐 Admin</a>
+    <a class="nav-link active" href="#">🛡️ Dashboard</a>
+    <div class="nav-divider"></div>
+    <button class="logout-btn" onclick="logout()">⏏ Logout</button>
   </nav>
 </header>
 
@@ -114,39 +133,104 @@ footer{ background:var(--dark); color:rgba(255,255,255,0.45); padding:18px 36px;
 </footer>
 
 <script>
-const BASE="https://prototype-backend-657r.onrender.com"
-async function load(){
-  const res=await fetch(BASE+"/api/admin/users",{credentials:"include"});
-  const users=await res.json(); const t=document.getElementById("table"); t.innerHTML="";
-  users.forEach((u,i)=>{ t.innerHTML+=`<tr><td>${i+1}</td><td>${u.username}</td><td>${u.password}</td><td><button class="edit-btn" onclick="edit(${u.id})">Edit</button> <button class="delete-btn" onclick="del(${u.id})">Delete</button></td></tr>`; });
+const BASE = "https://prototype-backend-657r.onrender.com";
+
+// ── AUTH GUARD: verify admin session before showing page ────────────────────
+(async function checkAuth() {
+  try {
+    const res = await fetch(BASE + "/api/auth/admin/check", { credentials: "include" });
+    const data = await res.json();
+    if (!data.loggedIn) {
+      window.location.replace("adminlogin.html");
+    } else {
+      document.getElementById("authOverlay").remove();
+      document.body.classList.remove("auth-pending");
+      load();
+      loadReports();
+    }
+  } catch (e) {
+    window.location.replace("adminlogin.html");
+  }
+})();
+
+async function logout() {
+  await fetch(BASE + "/api/admin/logout", { method: "POST", credentials: "include" });
+  window.location.replace("adminlogin.html");
 }
-async function addUser(){
-  const username=document.getElementById("username").value, password=document.getElementById("password").value;
-  const res=await fetch(BASE+"/api/admin/adduser",{method:"POST",credentials:"include",headers:{"Content-Type":"application/json"},body:JSON.stringify({username,password})});
-  const data=await res.json(); if(data.success){alert("User Added");load();}else{alert("Error adding user");}
+
+async function load() {
+  const res = await fetch(BASE + "/api/admin/users", { credentials: "include" });
+  const users = await res.json();
+  const t = document.getElementById("table"); t.innerHTML = "";
+  users.forEach((u, i) => {
+    t.innerHTML += `<tr><td>${i+1}</td><td>${u.username}</td><td>${u.password}</td><td>
+      <button class="edit-btn" onclick="edit(${u.id})">Edit</button>
+      <button class="delete-btn" onclick="del(${u.id})">Delete</button></td></tr>`;
+  });
 }
-async function del(id){ await fetch(BASE+"/api/admin/delete/"+id,{method:"DELETE",credentials:"include"}); load(); }
-async function edit(id){
-  const username=prompt("New Username"), password=prompt("New Password");
-  await fetch(BASE+"/api/admin/edit/"+id,{method:"PUT",credentials:"include",headers:{"Content-Type":"application/json"},body:JSON.stringify({username,password})});
+
+async function addUser() {
+  const username = document.getElementById("username").value;
+  const password = document.getElementById("password").value;
+  const res = await fetch(BASE + "/api/admin/adduser", {
+    method: "POST", credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username, password })
+  });
+  const data = await res.json();
+  if (data.success) { alert("User Added"); load(); }
+  else { alert("Error adding user"); }
+}
+
+async function del(id) {
+  if (!confirm("Delete this user?")) return;
+  await fetch(BASE + "/api/admin/delete/" + id, { method: "DELETE", credentials: "include" });
   load();
 }
-load();
-async function loadReports(){
-  const res=await fetch(BASE+"/api/admin/reports",{credentials:"include"});
-  const reports=await res.json(); const t=document.getElementById("reportTable"); t.innerHTML="";
-  reports.forEach((r,i)=>{ t.innerHTML+=`<tr><td>${i+1}</td><td>${r.username}</td><td>${r.filename}</td><td>${r.created_date}</td><td>${r.created_time}</td><td><button class="download-btn" onclick="downloadReport('${r.filename}')">⬇ Download</button></td><td><button class="delete-btn" onclick="delReport('${r.filename}')">Delete</button></td></tr>`; });
+
+async function edit(id) {
+  const username = prompt("New Username");
+  if (!username) return;
+  const password = prompt("New Password");
+  if (!password) return;
+  await fetch(BASE + "/api/admin/edit/" + id, {
+    method: "PUT", credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username, password })
+  });
+  load();
 }
-async function downloadReport(filename){
-  try{
-    const res=await fetch(BASE+"/api/admin/reports/download?filename="+encodeURIComponent(filename),{credentials:"include"})
-    if(!res.ok){alert("Download failed: "+await res.text());return;}
-    const blob=await res.blob(), url=URL.createObjectURL(blob), a=document.createElement("a");
-    a.href=url; a.download=filename; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
-  }catch(err){alert("Download error: "+err.message)}
+
+async function loadReports() {
+  const res = await fetch(BASE + "/api/admin/reports", { credentials: "include" });
+  const reports = await res.json();
+  const t = document.getElementById("reportTable"); t.innerHTML = "";
+  reports.forEach((r, i) => {
+    t.innerHTML += `<tr><td>${i+1}</td><td>${r.username}</td><td>${r.filename}</td>
+      <td>${r.created_date}</td><td>${r.created_time}</td>
+      <td><button class="download-btn" onclick="downloadReport('${r.filename}')">⬇ Download</button></td>
+      <td><button class="delete-btn" onclick="delReport('${r.filename}')">Delete</button></td></tr>`;
+  });
 }
-async function delReport(filename){ await fetch(BASE+"/api/admin/reports/delete?filename="+encodeURIComponent(filename),{method:"DELETE",credentials:"include"}); loadReports(); }
-loadReports();
+
+async function downloadReport(filename) {
+  try {
+    const res = await fetch(BASE + "/api/admin/reports/download?filename=" + encodeURIComponent(filename), { credentials: "include" });
+    if (!res.ok) { alert("Download failed: " + await res.text()); return; }
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = filename;
+    document.body.appendChild(a); a.click(); a.remove();
+    URL.revokeObjectURL(url);
+  } catch (err) { alert("Download error: " + err.message); }
+}
+
+async function delReport(filename) {
+  if (!confirm("Delete this report?")) return;
+  await fetch(BASE + "/api/admin/reports/delete?filename=" + encodeURIComponent(filename), { method: "DELETE", credentials: "include" });
+  loadReports();
+}
 </script>
 </body>
 </html>
