@@ -3,9 +3,7 @@
 
 <head>
 <title>Admin Dashboard</title>
-
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
 <style>
@@ -20,6 +18,66 @@ font-family:'Poppins',sans-serif;
 body{
 background:linear-gradient(135deg,#4facfe,#00f2fe);
 min-height:100vh;
+}
+
+/* ── HEADER ── */
+header{
+background:rgba(255,255,255,0.15);
+backdrop-filter:blur(10px);
+padding:0 30px;
+display:flex;
+align-items:center;
+justify-content:space-between;
+height:60px;
+box-shadow:0 2px 12px rgba(0,0,0,0.15);
+position:sticky;
+top:0;
+z-index:100;
+}
+
+.header-title{
+color:white;
+font-size:18px;
+font-weight:600;
+letter-spacing:0.5px;
+}
+
+nav{
+display:flex;
+gap:10px;
+align-items:center;
+}
+
+.nav-btn{
+padding:8px 18px;
+border:none;
+border-radius:8px;
+font-size:13px;
+font-weight:500;
+cursor:pointer;
+transition:0.2s;
+display:flex;
+align-items:center;
+gap:6px;
+}
+
+.nav-btn:hover{
+transform:translateY(-2px);
+box-shadow:0 4px 12px rgba(0,0,0,0.2);
+}
+
+.btn-user{
+background:white;
+color:#0072ff;
+}
+
+.btn-logout{
+background:#ff4757;
+color:white;
+}
+
+/* ── MAIN CONTENT ── */
+.page{
 padding:40px;
 }
 
@@ -69,7 +127,6 @@ cursor:pointer;
 font-weight:500;
 }
 
-/* Fix overflow for tables */
 .table-wrapper{
 width:100%;
 overflow-x:auto;
@@ -128,8 +185,6 @@ border:none;
 padding:6px 10px;
 border-radius:6px;
 cursor:pointer;
-text-decoration:none;
-display:inline-block;
 font-size:12px;
 }
 
@@ -138,6 +193,18 @@ font-size:12px;
 
 <body>
 
+<!-- ── HEADER ── -->
+<header>
+  <span class="header-title">🛡️ Admin Dashboard</span>
+  <nav>
+    <button class="nav-btn btn-user" onclick="location.href='https://mathankumar8248097868-cloud.github.io/prototype-frontend/userlogin.html'">
+      👤 User Login
+    </button>
+  </nav>
+</header>
+
+<!-- ── CONTENT ── -->
+<div class="page">
 <div class="container">
 
 <h2>Admin Dashboard</h2>
@@ -164,19 +231,15 @@ font-size:12px;
 <th>Action</th>
 </tr>
 </thead>
-
 <tbody id="table"></tbody>
-
 </table>
 </div>
 
 <!-- REPORT LIST -->
-
 <h3>Generated Reports</h3>
 
 <div class="table-wrapper">
 <table>
-
 <thead>
 <tr>
 <th>No</th>
@@ -188,12 +251,11 @@ font-size:12px;
 <th>Action</th>
 </tr>
 </thead>
-
 <tbody id="reportTable"></tbody>
-
 </table>
 </div>
 
+</div>
 </div>
 
 <script>
@@ -203,123 +265,57 @@ const BASE = "https://prototype-backend-657r.onrender.com"
 // ================= USERS =================
 
 async function load(){
-
-const res = await fetch(BASE+"/api/admin/users",{
-credentials:"include"
-});
-
+const res = await fetch(BASE+"/api/admin/users",{ credentials:"include" });
 const users = await res.json();
-
 const table = document.getElementById("table");
-
 table.innerHTML="";
-
 users.forEach((u,i)=>{
-
 table.innerHTML+=`
-
 <tr>
-
 <td>${i+1}</td>
 <td>${u.username}</td>
 <td>${u.password}</td>
-
 <td>
-
 <button class="edit-btn" onclick="edit(${u.id})">Edit</button>
-
 <button class="delete-btn" onclick="del(${u.id})">Delete</button>
-
 </td>
-
-</tr>
-
-`;
-
+</tr>`;
 });
-
 }
 
 // ================= ADD USER =================
 
 async function addUser(){
-
 const username=document.getElementById("username").value;
 const password=document.getElementById("password").value;
-
 const res = await fetch(BASE+"/api/admin/adduser",{
-
-method:"POST",
-credentials:"include",
-
-headers:{
-"Content-Type":"application/json"
-},
-
-body:JSON.stringify({
-username,
-password
-})
-
+method:"POST",credentials:"include",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({username,password})
 });
-
 const data = await res.json();
-
-if(data.success){
-
-alert("User Added");
-
-load();
-
-}else{
-
-alert("Error adding user");
-
-}
-
+if(data.success){ alert("User Added"); load(); }
+else{ alert("Error adding user"); }
 }
 
 // ================= DELETE USER =================
 
 async function del(id){
-
-await fetch(BASE+"/api/admin/delete/"+id,{
-
-method:"DELETE",
-credentials:"include"
-
-});
-
+await fetch(BASE+"/api/admin/delete/"+id,{method:"DELETE",credentials:"include"});
 load();
-
 }
 
 // ================= EDIT USER =================
 
 async function edit(id){
-
 const username=prompt("New Username");
-
 const password=prompt("New Password");
-
 await fetch(BASE+"/api/admin/edit/"+id,{
-
-method:"PUT",
-credentials:"include",
-
-headers:{
-"Content-Type":"application/json"
-},
-
-body:JSON.stringify({
-username,
-password
-})
-
+method:"PUT",credentials:"include",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({username,password})
 });
-
 load();
-
 }
 
 load();
@@ -327,93 +323,44 @@ load();
 // ================= REPORTS =================
 
 async function loadReports(){
-
-const res = await fetch(BASE+"/api/admin/reports",{
-credentials:"include"
-});
-
+const res = await fetch(BASE+"/api/admin/reports",{credentials:"include"});
 const reports = await res.json();
-
 const table = document.getElementById("reportTable");
-
 table.innerHTML="";
-
 reports.forEach((r,i)=>{
-
 table.innerHTML+=`
-
 <tr>
-
 <td>${i+1}</td>
 <td>${r.username}</td>
 <td>${r.filename}</td>
 <td>${r.created_date}</td>
 <td>${r.created_time}</td>
-
-<td>
-<button class="download-btn" onclick="downloadReport('${r.filename}')">Download</button>
-</td>
-
-<td>
-<button class="delete-btn" onclick="delReport('${r.filename}')">Delete</button>
-</td>
-
-</tr>
-
-`;
-
+<td><button class="download-btn" onclick="downloadReport('${r.filename}')">Download</button></td>
+<td><button class="delete-btn" onclick="delReport('${r.filename}')">Delete</button></td>
+</tr>`;
 });
-
 }
 
-// ================= DOWNLOAD REPORT (FIXED) =================
-// Uses fetch with credentials so the session cookie is sent,
-// then converts the response to a blob and triggers a real download.
+// ================= DOWNLOAD REPORT =================
 
 async function downloadReport(filename){
-
 try {
-
-  const res = await fetch(
-    BASE+"/api/admin/reports/download?filename="+encodeURIComponent(filename),
-    { credentials: "include" }
-  )
-
-  if(!res.ok){
-    const msg = await res.text()
-    alert("Download failed: " + msg)
-    return
-  }
-
+  const res = await fetch(BASE+"/api/admin/reports/download?filename="+encodeURIComponent(filename),{credentials:"include"})
+  if(!res.ok){ alert("Download failed: " + await res.text()); return; }
   const blob = await res.blob()
   const url = URL.createObjectURL(blob)
   const a = document.createElement("a")
-  a.href = url
-  a.download = filename
-  document.body.appendChild(a)
-  a.click()
-  a.remove()
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); a.remove();
   URL.revokeObjectURL(url)
-
-} catch(err) {
-  alert("Download error: " + err.message)
-}
-
+} catch(err){ alert("Download error: " + err.message) }
 }
 
 // ================= DELETE REPORT =================
 
 async function delReport(filename){
-
-await fetch(BASE+"/api/admin/reports/delete?filename="+encodeURIComponent(filename),{
-
-method:"DELETE",
-credentials:"include"
-
-});
-
+await fetch(BASE+"/api/admin/reports/delete?filename="+encodeURIComponent(filename),{method:"DELETE",credentials:"include"});
 loadReports();
-
 }
 
 loadReports();
