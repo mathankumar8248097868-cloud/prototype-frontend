@@ -1,205 +1,70 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-<title>Admin Dashboard</title>
+<title>Admin Dashboard — Ultra Report</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:'Poppins',sans-serif;
-}
-
-body{
-background:linear-gradient(135deg,#4facfe,#00f2fe);
-min-height:100vh;
-}
+*{ margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
+:root{ --blue1:#4facfe; --blue2:#00c6ff; --dark:#1a2340; --accent:#f7c948; }
+body{ background:linear-gradient(135deg,var(--blue1),var(--blue2)); min-height:100vh; display:flex; flex-direction:column; }
 
 /* ── HEADER ── */
-header{
-background:rgba(255,255,255,0.15);
-backdrop-filter:blur(10px);
-padding:0 30px;
-display:flex;
-align-items:center;
-justify-content:space-between;
-height:60px;
-box-shadow:0 2px 12px rgba(0,0,0,0.15);
-position:sticky;
-top:0;
-z-index:100;
-}
+header{ background:var(--dark); padding:0 36px; display:flex; align-items:center; justify-content:space-between; height:64px; box-shadow:0 4px 24px rgba(0,0,0,0.35); position:sticky; top:0; z-index:200; }
+.logo{ display:flex; align-items:center; gap:10px; text-decoration:none; cursor:pointer; }
+.logo-icon{ width:38px; height:38px; background:linear-gradient(135deg,var(--blue1),var(--blue2)); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:20px; }
+.logo-text{ font-family:'Playfair Display',serif; color:white; font-size:16px; line-height:1.1; }
+.logo-text span{ display:block; font-family:'Poppins',sans-serif; font-size:10px; font-weight:300; color:rgba(255,255,255,0.45); letter-spacing:2px; text-transform:uppercase; }
+nav{ display:flex; gap:4px; align-items:center; }
+.nav-link{ padding:8px 15px; border:none; border-radius:8px; font-size:13px; font-weight:500; cursor:pointer; transition:all 0.2s; background:transparent; color:rgba(255,255,255,0.55); text-decoration:none; display:flex; align-items:center; gap:6px; }
+.nav-link:hover{ background:rgba(255,255,255,0.1); color:white; }
+.nav-link.active{ background:rgba(79,172,254,0.18); color:var(--blue1); }
+.nav-divider{ width:1px; height:22px; background:rgba(255,255,255,0.12); margin:0 4px; }
 
-.header-title{
-color:white;
-font-size:18px;
-font-weight:600;
-letter-spacing:0.5px;
-}
+/* ── MAIN ── */
+.page{ padding:36px; flex:1; }
+.container{ background:white; border-radius:16px; padding:32px; max-width:940px; margin:auto; box-shadow:0 20px 60px rgba(0,0,0,0.18); }
+.page-title{ font-family:'Playfair Display',serif; font-size:22px; color:var(--dark); margin-bottom:24px; padding-bottom:14px; border-bottom:2px solid #f0f4ff; display:flex; align-items:center; gap:10px; }
+h3{ margin-top:28px; color:#888; font-size:11px; text-transform:uppercase; letter-spacing:1.5px; font-weight:600; margin-bottom:2px; }
+.form-group{ display:flex; gap:10px; margin-top:10px; flex-wrap:wrap; }
+input{ flex:1; padding:11px 14px; border-radius:9px; border:1.5px solid #e0e7ff; font-size:14px; transition:border 0.2s; outline:none; }
+input:focus{ border-color:var(--blue1); }
+.add-btn{ padding:11px 22px; background:linear-gradient(135deg,var(--blue1),var(--blue2)); color:white; border:none; border-radius:9px; cursor:pointer; font-weight:600; font-size:13px; transition:0.2s; white-space:nowrap; }
+.add-btn:hover{ opacity:0.88; transform:translateY(-1px); }
+.table-wrapper{ width:100%; overflow-x:auto; margin-top:10px; border-radius:10px; overflow:hidden; border:1px solid #eef2ff; }
+table{ width:100%; border-collapse:collapse; min-width:540px; }
+thead{ background:linear-gradient(90deg,var(--dark),#2a3a60); }
+th{ padding:12px 10px; font-size:11px; font-weight:600; color:rgba(255,255,255,0.85); text-transform:uppercase; letter-spacing:0.6px; white-space:nowrap; }
+td{ padding:11px 10px; text-align:center; border-bottom:1px solid #f0f4ff; font-size:13px; color:#555; }
+tr:last-child td{ border-bottom:none; }
+tr:hover td{ background:#f8fbff; }
+.edit-btn{ background:#ff9f1a; color:white; border:none; padding:5px 11px; border-radius:6px; cursor:pointer; font-size:12px; font-weight:500; margin:2px; }
+.delete-btn{ background:#ff4757; color:white; border:none; padding:5px 11px; border-radius:6px; cursor:pointer; font-size:12px; font-weight:500; margin:2px; }
+.download-btn{ background:#2ed573; color:white; border:none; padding:5px 11px; border-radius:6px; cursor:pointer; font-size:12px; font-weight:500; }
 
-nav{
-display:flex;
-gap:10px;
-align-items:center;
-}
-
-.nav-btn{
-padding:8px 18px;
-border:none;
-border-radius:8px;
-font-size:13px;
-font-weight:500;
-cursor:pointer;
-transition:0.2s;
-display:flex;
-align-items:center;
-gap:6px;
-}
-
-.nav-btn:hover{
-transform:translateY(-2px);
-box-shadow:0 4px 12px rgba(0,0,0,0.2);
-}
-
-.btn-user{
-background:white;
-color:#0072ff;
-}
-
-.btn-logout{
-background:#ff4757;
-color:white;
-}
-
-/* ── MAIN CONTENT ── */
-.page{
-padding:40px;
-}
-
-.container{
-background:white;
-border-radius:15px;
-padding:30px;
-max-width:900px;
-margin:auto;
-box-shadow:0 15px 35px rgba(0,0,0,0.2);
-overflow:hidden;
-}
-
-h2{
-text-align:center;
-margin-bottom:20px;
-color:#333;
-}
-
-h3{
-margin-top:20px;
-color:#444;
-}
-
-.form-group{
-display:flex;
-gap:10px;
-margin-top:15px;
-flex-wrap:wrap;
-}
-
-input{
-flex:1;
-padding:12px;
-border-radius:8px;
-border:1px solid #ddd;
-font-size:14px;
-}
-
-.add-btn{
-padding:12px 18px;
-background:#4facfe;
-color:white;
-border:none;
-border-radius:8px;
-cursor:pointer;
-font-weight:500;
-}
-
-.table-wrapper{
-width:100%;
-overflow-x:auto;
-}
-
-table{
-width:100%;
-border-collapse:collapse;
-margin-top:25px;
-min-width:600px;
-}
-
-thead{
-background:#4facfe;
-color:white;
-}
-
-th{
-padding:10px 8px;
-font-size:13px;
-white-space:nowrap;
-}
-
-td{
-padding:10px 8px;
-text-align:center;
-border-bottom:1px solid #eee;
-font-size:13px;
-word-break:break-all;
-}
-
-.edit-btn{
-background:#ffa502;
-color:white;
-border:none;
-padding:6px 10px;
-border-radius:6px;
-cursor:pointer;
-font-size:12px;
-}
-
-.delete-btn{
-background:#ff4757;
-color:white;
-border:none;
-padding:6px 10px;
-border-radius:6px;
-cursor:pointer;
-font-size:12px;
-}
-
-.download-btn{
-background:#2ed573;
-color:white;
-border:none;
-padding:6px 10px;
-border-radius:6px;
-cursor:pointer;
-font-size:12px;
-}
-
+/* ── FOOTER ── */
+footer{ background:var(--dark); color:rgba(255,255,255,0.45); padding:18px 36px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; }
+.footer-left{ font-size:13px; display:flex; align-items:center; gap:8px; }
+.footer-left strong{ color:var(--blue1); font-weight:600; }
+.footer-dot{ width:6px; height:6px; background:var(--blue1); border-radius:50%; display:inline-block; flex-shrink:0; }
+.footer-right{ display:flex; gap:18px; }
+.footer-right a{ color:rgba(255,255,255,0.35); text-decoration:none; font-size:12px; transition:color 0.2s; }
+.footer-right a:hover{ color:var(--blue1); }
 </style>
 </head>
-
 <body>
 
 <!-- ── HEADER ── -->
 <header>
-  <span class="header-title">🛡️ Admin Dashboard</span>
+  <div class="logo" onclick="location.href='index.html'">
+    <div class="logo-icon">🦷</div>
+    <div class="logo-text">Ultra Report <span>Dental Camp System</span></div>
+  </div>
   <nav>
-    <button class="nav-btn btn-user" onclick="location.href='https://mathankumar8248097868-cloud.github.io/prototype-frontend/userlogin.html'">
-      👤 User Login
-    </button>
+    <a class="nav-link" href="index.html">🏠 Home</a>
+    <div class="nav-divider"></div>
+    <a class="nav-link" href="userlogin.html">👤 User Login</a>
+    <a class="nav-link active" href="adminlogin.html">🔐 Admin</a>
   </nav>
 </header>
 
@@ -207,165 +72,81 @@ font-size:12px;
 <div class="page">
 <div class="container">
 
-<h2>Admin Dashboard</h2>
+<div class="page-title">🛡️ Admin Dashboard</div>
 
-<!-- ADD USER -->
-<h3>Add User</h3>
-
+<h3>➕ Add New User</h3>
 <div class="form-group">
-<input id="username" placeholder="Username">
-<input id="password" type="password" placeholder="Password">
-<button class="add-btn" onclick="addUser()">Add User</button>
+  <input id="username" placeholder="Username">
+  <input id="password" type="password" placeholder="Password">
+  <button class="add-btn" onclick="addUser()">Add User</button>
 </div>
 
-<!-- USER LIST -->
-<h3>User List</h3>
-
+<h3>👥 User List</h3>
 <div class="table-wrapper">
-<table>
-<thead>
-<tr>
-<th>No</th>
-<th>Username</th>
-<th>Password</th>
-<th>Action</th>
-</tr>
-</thead>
-<tbody id="table"></tbody>
-</table>
+  <table>
+    <thead><tr><th>No</th><th>Username</th><th>Password</th><th>Action</th></tr></thead>
+    <tbody id="table"></tbody>
+  </table>
 </div>
 
-<!-- REPORT LIST -->
-<h3>Generated Reports</h3>
-
+<h3>📄 Generated Reports</h3>
 <div class="table-wrapper">
-<table>
-<thead>
-<tr>
-<th>No</th>
-<th>User</th>
-<th>Document</th>
-<th>Date</th>
-<th>Time</th>
-<th>Download</th>
-<th>Action</th>
-</tr>
-</thead>
-<tbody id="reportTable"></tbody>
-</table>
+  <table>
+    <thead><tr><th>No</th><th>User</th><th>Document</th><th>Date</th><th>Time</th><th>Download</th><th>Action</th></tr></thead>
+    <tbody id="reportTable"></tbody>
+  </table>
 </div>
 
 </div>
 </div>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="footer-left">
+    <span class="footer-dot"></span>
+    <span>© 2026 <strong>Ultra College</strong> — Dental Camp Report System</span>
+  </div>
+  <div class="footer-right">
+    <a href="index.html">Home</a>
+    <a href="userlogin.html">User Login</a>
+    <a href="adminlogin.html">Admin Login</a>
+  </div>
+</footer>
 
 <script>
-
-const BASE = "https://prototype-backend-657r.onrender.com"
-
-// ================= USERS =================
-
+const BASE="https://prototype-backend-657r.onrender.com"
 async function load(){
-const res = await fetch(BASE+"/api/admin/users",{ credentials:"include" });
-const users = await res.json();
-const table = document.getElementById("table");
-table.innerHTML="";
-users.forEach((u,i)=>{
-table.innerHTML+=`
-<tr>
-<td>${i+1}</td>
-<td>${u.username}</td>
-<td>${u.password}</td>
-<td>
-<button class="edit-btn" onclick="edit(${u.id})">Edit</button>
-<button class="delete-btn" onclick="del(${u.id})">Delete</button>
-</td>
-</tr>`;
-});
+  const res=await fetch(BASE+"/api/admin/users",{credentials:"include"});
+  const users=await res.json(); const t=document.getElementById("table"); t.innerHTML="";
+  users.forEach((u,i)=>{ t.innerHTML+=`<tr><td>${i+1}</td><td>${u.username}</td><td>${u.password}</td><td><button class="edit-btn" onclick="edit(${u.id})">Edit</button> <button class="delete-btn" onclick="del(${u.id})">Delete</button></td></tr>`; });
 }
-
-// ================= ADD USER =================
-
 async function addUser(){
-const username=document.getElementById("username").value;
-const password=document.getElementById("password").value;
-const res = await fetch(BASE+"/api/admin/adduser",{
-method:"POST",credentials:"include",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({username,password})
-});
-const data = await res.json();
-if(data.success){ alert("User Added"); load(); }
-else{ alert("Error adding user"); }
+  const username=document.getElementById("username").value, password=document.getElementById("password").value;
+  const res=await fetch(BASE+"/api/admin/adduser",{method:"POST",credentials:"include",headers:{"Content-Type":"application/json"},body:JSON.stringify({username,password})});
+  const data=await res.json(); if(data.success){alert("User Added");load();}else{alert("Error adding user");}
 }
-
-// ================= DELETE USER =================
-
-async function del(id){
-await fetch(BASE+"/api/admin/delete/"+id,{method:"DELETE",credentials:"include"});
-load();
-}
-
-// ================= EDIT USER =================
-
+async function del(id){ await fetch(BASE+"/api/admin/delete/"+id,{method:"DELETE",credentials:"include"}); load(); }
 async function edit(id){
-const username=prompt("New Username");
-const password=prompt("New Password");
-await fetch(BASE+"/api/admin/edit/"+id,{
-method:"PUT",credentials:"include",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({username,password})
-});
-load();
+  const username=prompt("New Username"), password=prompt("New Password");
+  await fetch(BASE+"/api/admin/edit/"+id,{method:"PUT",credentials:"include",headers:{"Content-Type":"application/json"},body:JSON.stringify({username,password})});
+  load();
 }
-
 load();
-
-// ================= REPORTS =================
-
 async function loadReports(){
-const res = await fetch(BASE+"/api/admin/reports",{credentials:"include"});
-const reports = await res.json();
-const table = document.getElementById("reportTable");
-table.innerHTML="";
-reports.forEach((r,i)=>{
-table.innerHTML+=`
-<tr>
-<td>${i+1}</td>
-<td>${r.username}</td>
-<td>${r.filename}</td>
-<td>${r.created_date}</td>
-<td>${r.created_time}</td>
-<td><button class="download-btn" onclick="downloadReport('${r.filename}')">Download</button></td>
-<td><button class="delete-btn" onclick="delReport('${r.filename}')">Delete</button></td>
-</tr>`;
-});
+  const res=await fetch(BASE+"/api/admin/reports",{credentials:"include"});
+  const reports=await res.json(); const t=document.getElementById("reportTable"); t.innerHTML="";
+  reports.forEach((r,i)=>{ t.innerHTML+=`<tr><td>${i+1}</td><td>${r.username}</td><td>${r.filename}</td><td>${r.created_date}</td><td>${r.created_time}</td><td><button class="download-btn" onclick="downloadReport('${r.filename}')">⬇ Download</button></td><td><button class="delete-btn" onclick="delReport('${r.filename}')">Delete</button></td></tr>`; });
 }
-
-// ================= DOWNLOAD REPORT =================
-
 async function downloadReport(filename){
-try {
-  const res = await fetch(BASE+"/api/admin/reports/download?filename="+encodeURIComponent(filename),{credentials:"include"})
-  if(!res.ok){ alert("Download failed: " + await res.text()); return; }
-  const blob = await res.blob()
-  const url = URL.createObjectURL(blob)
-  const a = document.createElement("a")
-  a.href = url; a.download = filename;
-  document.body.appendChild(a); a.click(); a.remove();
-  URL.revokeObjectURL(url)
-} catch(err){ alert("Download error: " + err.message) }
+  try{
+    const res=await fetch(BASE+"/api/admin/reports/download?filename="+encodeURIComponent(filename),{credentials:"include"})
+    if(!res.ok){alert("Download failed: "+await res.text());return;}
+    const blob=await res.blob(), url=URL.createObjectURL(blob), a=document.createElement("a");
+    a.href=url; a.download=filename; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+  }catch(err){alert("Download error: "+err.message)}
 }
-
-// ================= DELETE REPORT =================
-
-async function delReport(filename){
-await fetch(BASE+"/api/admin/reports/delete?filename="+encodeURIComponent(filename),{method:"DELETE",credentials:"include"});
+async function delReport(filename){ await fetch(BASE+"/api/admin/reports/delete?filename="+encodeURIComponent(filename),{method:"DELETE",credentials:"include"}); loadReports(); }
 loadReports();
-}
-
-loadReports();
-
 </script>
-
 </body>
 </html>
