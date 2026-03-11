@@ -198,11 +198,13 @@ font-size:12px;
 
 <script>
 
+const BASE = "https://prototype-backend-657r.onrender.com"
+
 // ================= USERS =================
 
 async function load(){
 
-const res = await fetch("https://prototype-backend-657r.onrender.com/api/admin/users",{
+const res = await fetch(BASE+"/api/admin/users",{
 credentials:"include"
 });
 
@@ -245,7 +247,7 @@ async function addUser(){
 const username=document.getElementById("username").value;
 const password=document.getElementById("password").value;
 
-const res = await fetch("https://prototype-backend-657r.onrender.com/api/admin/adduser",{
+const res = await fetch(BASE+"/api/admin/adduser",{
 
 method:"POST",
 credentials:"include",
@@ -281,7 +283,7 @@ alert("Error adding user");
 
 async function del(id){
 
-await fetch("https://prototype-backend-657r.onrender.com/api/admin/delete/"+id,{
+await fetch(BASE+"/api/admin/delete/"+id,{
 
 method:"DELETE",
 credentials:"include"
@@ -300,7 +302,7 @@ const username=prompt("New Username");
 
 const password=prompt("New Password");
 
-await fetch("https://prototype-backend-657r.onrender.com/api/admin/edit/"+id,{
+await fetch(BASE+"/api/admin/edit/"+id,{
 
 method:"PUT",
 credentials:"include",
@@ -326,7 +328,7 @@ load();
 
 async function loadReports(){
 
-const res = await fetch("https://prototype-backend-657r.onrender.com/api/admin/reports",{
+const res = await fetch(BASE+"/api/admin/reports",{
 credentials:"include"
 });
 
@@ -349,9 +351,7 @@ table.innerHTML+=`
 <td>${r.created_time}</td>
 
 <td>
-<a class="download-btn" href="https://prototype-backend-657r.onrender.com/reports/${r.filename}" download>
-Download
-</a>
+<button class="download-btn" onclick="downloadReport('${r.filename}')">Download</button>
 </td>
 
 <td>
@@ -366,11 +366,46 @@ Download
 
 }
 
+// ================= DOWNLOAD REPORT (FIXED) =================
+// Uses fetch with credentials so the session cookie is sent,
+// then converts the response to a blob and triggers a real download.
+
+async function downloadReport(filename){
+
+try {
+
+  const res = await fetch(
+    BASE+"/api/admin/reports/download?filename="+encodeURIComponent(filename),
+    { credentials: "include" }
+  )
+
+  if(!res.ok){
+    const msg = await res.text()
+    alert("Download failed: " + msg)
+    return
+  }
+
+  const blob = await res.blob()
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement("a")
+  a.href = url
+  a.download = filename
+  document.body.appendChild(a)
+  a.click()
+  a.remove()
+  URL.revokeObjectURL(url)
+
+} catch(err) {
+  alert("Download error: " + err.message)
+}
+
+}
+
 // ================= DELETE REPORT =================
 
 async function delReport(filename){
 
-await fetch("https://prototype-backend-657r.onrender.com/api/admin/reports/delete?filename="+encodeURIComponent(filename),{
+await fetch(BASE+"/api/admin/reports/delete?filename="+encodeURIComponent(filename),{
 
 method:"DELETE",
 credentials:"include"
