@@ -30,6 +30,7 @@ padding:30px;
 max-width:900px;
 margin:auto;
 box-shadow:0 15px 35px rgba(0,0,0,0.2);
+overflow:hidden;
 }
 
 h2{
@@ -68,10 +69,17 @@ cursor:pointer;
 font-weight:500;
 }
 
+/* Fix overflow for tables */
+.table-wrapper{
+width:100%;
+overflow-x:auto;
+}
+
 table{
 width:100%;
 border-collapse:collapse;
 margin-top:25px;
+min-width:600px;
 }
 
 thead{
@@ -80,42 +88,49 @@ color:white;
 }
 
 th{
-padding:12px;
+padding:10px 8px;
+font-size:13px;
+white-space:nowrap;
 }
 
 td{
-padding:12px;
+padding:10px 8px;
 text-align:center;
 border-bottom:1px solid #eee;
+font-size:13px;
+word-break:break-all;
 }
 
 .edit-btn{
 background:#ffa502;
 color:white;
 border:none;
-padding:6px 12px;
+padding:6px 10px;
 border-radius:6px;
 cursor:pointer;
+font-size:12px;
 }
 
 .delete-btn{
 background:#ff4757;
 color:white;
 border:none;
-padding:6px 12px;
+padding:6px 10px;
 border-radius:6px;
 cursor:pointer;
+font-size:12px;
 }
 
 .download-btn{
 background:#2ed573;
 color:white;
 border:none;
-padding:6px 12px;
+padding:6px 10px;
 border-radius:6px;
 cursor:pointer;
 text-decoration:none;
 display:inline-block;
+font-size:12px;
 }
 
 </style>
@@ -139,6 +154,7 @@ display:inline-block;
 <!-- USER LIST -->
 <h3>User List</h3>
 
+<div class="table-wrapper">
 <table>
 <thead>
 <tr>
@@ -152,11 +168,13 @@ display:inline-block;
 <tbody id="table"></tbody>
 
 </table>
+</div>
 
 <!-- REPORT LIST -->
 
 <h3>Generated Reports</h3>
 
+<div class="table-wrapper">
 <table>
 
 <thead>
@@ -174,6 +192,7 @@ display:inline-block;
 <tbody id="reportTable"></tbody>
 
 </table>
+</div>
 
 </div>
 
@@ -336,7 +355,7 @@ Download
 </td>
 
 <td>
-<button class="delete-btn" onclick="delReport(${r.id})">Delete</button>
+<button class="delete-btn" onclick="delReport('${r.filename}')">Delete</button>
 </td>
 
 </tr>
@@ -349,9 +368,9 @@ Download
 
 // ================= DELETE REPORT =================
 
-async function delReport(id){
+async function delReport(filename){
 
-await fetch("https://prototype-backend-657r.onrender.com/api/admin/reports/delete/"+id,{
+await fetch("https://prototype-backend-657r.onrender.com/api/admin/reports/delete?filename="+encodeURIComponent(filename),{
 
 method:"DELETE",
 credentials:"include"
