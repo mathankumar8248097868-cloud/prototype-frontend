@@ -30,12 +30,25 @@ body.ready{ background:linear-gradient(135deg,var(--blue1),var(--blue2)); displa
 const BASE = "https://prototype-backend-657r.onrender.com";
 
 // Auth check — if not admin, redirect immediately. Page HTML has NO content.
+// fetchWithTimeout: always redirect if server is slow/down (free Render tier wakes slowly)
+function fetchWithTimeout(url, opts, ms = 8000) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), ms);
+  return fetch(url, { ...opts, signal: controller.signal })
+    .finally(() => clearTimeout(timer));
+}
+
 (async function boot() {
   try {
-    const res = await fetch(BASE + "/api/auth/admin/check", { credentials: "include" });
+    const res = await fetchWithTimeout(BASE + "/api/auth/admin/check", { credentials: "include" }, 8000);
+    if (!res.ok) { window.location.replace("adminlogin.html"); return; }
     const data = await res.json();
     if (!data.loggedIn) { window.location.replace("adminlogin.html"); return; }
-  } catch (e) { window.location.replace("adminlogin.html"); return; }
+  } catch (e) {
+    // Network error, timeout, or server down — always block access
+    window.location.replace("adminlogin.html");
+    return;
+  }
 
   // Only reaches here if session is valid admin
   document.getElementById("gate").remove();
