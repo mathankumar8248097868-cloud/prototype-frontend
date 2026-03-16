@@ -1,84 +1,194 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <title>Admin Login — Ultra Report</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-*{ margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
-:root{ --blue1:#4facfe; --blue2:#00c6ff; --dark:#1a2340; }
-body{ background:linear-gradient(135deg,var(--blue1),var(--blue2)); min-height:100vh; display:flex; flex-direction:column; }
+*{ margin:0; padding:0; box-sizing:border-box; }
+:root{
+  --ink:#0d1117; --ink2:#1e2b3c;
+  --sky:#2563eb; --accent:#0ea5e9;
+  --silver:#f4f7fb; --muted:#64748b;
+  --white:#ffffff; --border:#e2e8f0;
+  --danger:#ef4444;
+  --amber:#f59e0b;
+}
+body{
+  font-family:'DM Sans',sans-serif;
+  background:var(--ink);
+  color:var(--ink);
+  min-height:100vh;
+  display:flex; flex-direction:column;
+}
 
 /* ── HEADER ── */
-header{ background:var(--dark); padding:0 36px; display:flex; align-items:center; justify-content:space-between; height:64px; box-shadow:0 4px 24px rgba(0,0,0,0.35); position:sticky; top:0; z-index:200; }
-.logo{ display:flex; align-items:center; gap:10px; text-decoration:none; cursor:pointer; }
-.logo-icon{ width:38px; height:38px; background:linear-gradient(135deg,var(--blue1),var(--blue2)); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:20px; }
-.logo-text{ font-family:'Playfair Display',serif; color:white; font-size:16px; line-height:1.1; }
-.logo-text span{ display:block; font-family:'Poppins',sans-serif; font-size:10px; font-weight:300; color:rgba(255,255,255,0.45); letter-spacing:2px; text-transform:uppercase; }
-nav{ display:flex; gap:4px; align-items:center; }
-.nav-link{ padding:8px 15px; border:none; border-radius:8px; font-size:13px; font-weight:500; cursor:pointer; transition:all 0.2s; background:transparent; color:rgba(255,255,255,0.55); text-decoration:none; display:flex; align-items:center; gap:6px; }
-.nav-link:hover{ background:rgba(255,255,255,0.1); color:white; }
-.nav-link.active{ background:rgba(79,172,254,0.18); color:var(--blue1); }
-.nav-divider{ width:1px; height:22px; background:rgba(255,255,255,0.12); margin:0 4px; }
+header{
+  position:sticky; top:0; z-index:500;
+  background:rgba(13,17,23,0.92);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid rgba(255,255,255,0.07);
+  padding:0 48px; height:68px;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.logo{ display:flex; align-items:center; gap:12px; text-decoration:none; cursor:pointer; }
+.logo-mark{
+  width:40px; height:40px;
+  background:linear-gradient(135deg,var(--sky),var(--accent));
+  border-radius:12px; display:flex; align-items:center; justify-content:center;
+  font-size:18px; box-shadow:0 4px 14px rgba(37,99,235,0.3);
+}
+.logo-name{ font-family:'Cormorant Garamond',serif; font-size:20px; font-weight:700; color:white; }
+.logo-sub{ font-size:10px; color:rgba(255,255,255,0.35); font-weight:400; letter-spacing:1.5px; text-transform:uppercase; display:block; margin-top:-2px; }
+nav{ display:flex; align-items:center; gap:6px; }
+.nav-pill{ padding:8px 18px; border-radius:100px; font-size:13px; font-weight:500; text-decoration:none; color:rgba(255,255,255,0.4); transition:all 0.2s; display:flex; align-items:center; gap:6px; background:transparent; border:1px solid transparent; cursor:pointer; }
+.nav-pill:hover{ color:rgba(255,255,255,0.9); background:rgba(255,255,255,0.06); }
+.nav-pill.active{ color:var(--accent); background:rgba(14,165,233,0.1); border-color:rgba(14,165,233,0.2); }
+.nav-sep{ width:1px; height:20px; background:rgba(255,255,255,0.1); margin:0 6px; }
 
-/* ── CENTER ── */
-.center{ flex:1; display:flex; align-items:center; justify-content:center; padding:40px 20px; }
-.box{ width:380px; padding:44px 40px; border-radius:20px; background:rgba(255,255,255,0.15); backdrop-filter:blur(16px); box-shadow:0 20px 50px rgba(0,0,0,0.25); text-align:center; color:white; }
-.box-icon{ font-size:40px; margin-bottom:10px; }
-.box h2{ font-family:'Playfair Display',serif; font-size:22px; margin-bottom:6px; }
-.box p{ font-size:13px; opacity:0.65; margin-bottom:28px; }
-input{ width:100%; padding:13px 15px; margin:8px 0; border-radius:10px; border:none; font-size:14px; background:rgba(255,255,255,0.9); color:#333; outline:none; }
-input:focus{ background:white; }
-button{ width:100%; padding:14px; margin-top:14px; border:none; border-radius:10px; background:var(--dark); color:white; font-size:15px; font-weight:600; cursor:pointer; transition:0.3s; letter-spacing:0.5px; }
-button:hover{ background:#0f1a30; transform:translateY(-2px); box-shadow:0 8px 24px rgba(0,0,0,0.3); }
-#msg{ margin-top:14px; color:#ffdede; font-size:13px; min-height:20px; }
+/* ── MAIN ── */
+.page{
+  flex:1;
+  display:flex; align-items:center; justify-content:center;
+  padding:60px 24px;
+  position:relative; overflow:hidden;
+  background:linear-gradient(145deg, #0d1117 0%, #0f172a 50%, #0d1b2a 100%);
+}
+/* glow orbs */
+.page::before{
+  content:'';
+  position:absolute; top:10%; left:15%;
+  width:500px; height:500px;
+  background:radial-gradient(circle, rgba(37,99,235,0.12) 0%, transparent 70%);
+  border-radius:50%; pointer-events:none;
+}
+.page::after{
+  content:'';
+  position:absolute; bottom:10%; right:10%;
+  width:400px; height:400px;
+  background:radial-gradient(circle, rgba(6,182,212,0.1) 0%, transparent 70%);
+  border-radius:50%; pointer-events:none;
+}
+
+.card{
+  position:relative; z-index:2;
+  width:100%; max-width:420px;
+  background:rgba(255,255,255,0.04);
+  backdrop-filter:blur(24px);
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:24px;
+  padding:48px 44px;
+  box-shadow:0 32px 80px rgba(0,0,0,0.5);
+}
+.card-badge{
+  display:inline-flex; align-items:center; gap:7px;
+  background:rgba(245,158,11,0.12);
+  border:1px solid rgba(245,158,11,0.25);
+  border-radius:100px;
+  padding:5px 14px;
+  font-size:11px; font-weight:600; color:var(--amber);
+  letter-spacing:1px; text-transform:uppercase;
+  margin-bottom:22px;
+}
+.card-badge span{ width:5px; height:5px; background:var(--amber); border-radius:50%; display:inline-block; }
+.card-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:30px; font-weight:700;
+  color:white; margin-bottom:6px;
+}
+.card-sub{ font-size:13px; color:rgba(255,255,255,0.4); margin-bottom:32px; }
+.field-label{ font-size:12px; font-weight:600; color:rgba(255,255,255,0.6); letter-spacing:0.3px; margin-bottom:6px; display:block; }
+.field-wrap{ position:relative; margin-bottom:16px; }
+.field-wrap input{
+  width:100%; padding:13px 16px;
+  border-radius:10px;
+  border:1.5px solid rgba(255,255,255,0.1);
+  font-size:14px; font-family:'DM Sans',sans-serif;
+  color:white; background:rgba(255,255,255,0.06); outline:none;
+  transition:all 0.2s;
+}
+.field-wrap input::placeholder{ color:rgba(255,255,255,0.25); }
+.field-wrap input:focus{
+  border-color:rgba(37,99,235,0.7);
+  background:rgba(255,255,255,0.08);
+  box-shadow:0 0 0 3px rgba(37,99,235,0.12);
+}
+.submit-btn{
+  width:100%; padding:14px;
+  margin-top:10px;
+  background:linear-gradient(135deg,var(--sky),var(--accent));
+  color:white; border:none; border-radius:10px;
+  font-size:14px; font-weight:600; font-family:'DM Sans',sans-serif;
+  cursor:pointer; letter-spacing:0.3px;
+  transition:all 0.25s;
+  box-shadow:0 6px 20px rgba(37,99,235,0.35);
+}
+.submit-btn:hover:not(:disabled){ transform:translateY(-2px); box-shadow:0 10px 28px rgba(37,99,235,0.5); }
+.submit-btn:disabled{ opacity:0.6; cursor:not-allowed; transform:none; }
+#msg{ margin-top:14px; font-size:13px; color:#fca5a5; min-height:18px; text-align:center; font-weight:500; }
 
 /* ── FOOTER ── */
-footer{ background:var(--dark); color:rgba(255,255,255,0.45); padding:18px 36px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; }
-.footer-left{ font-size:13px; display:flex; align-items:center; gap:8px; }
-.footer-left strong{ color:var(--blue1); font-weight:600; }
-.footer-dot{ width:6px; height:6px; background:var(--blue1); border-radius:50%; display:inline-block; flex-shrink:0; }
-.footer-right{ display:flex; gap:18px; }
-.footer-right a{ color:rgba(255,255,255,0.35); text-decoration:none; font-size:12px; transition:color 0.2s; }
-.footer-right a:hover{ color:var(--blue1); }
+footer{
+  background:rgba(0,0,0,0.4);
+  color:rgba(255,255,255,0.3);
+  padding:18px 48px;
+  border-top:1px solid rgba(255,255,255,0.05);
+  display:flex; align-items:center; justify-content:space-between;
+  flex-wrap:wrap; gap:12px;
+}
+.footer-brand-name{ font-size:13px; color:rgba(255,255,255,0.5); font-weight:500; }
+.footer-brand-name strong{ color:var(--accent); }
+.footer-links{ display:flex; gap:20px; }
+.footer-links a{ color:rgba(255,255,255,0.25); text-decoration:none; font-size:12px; transition:color 0.2s; }
+.footer-links a:hover{ color:var(--accent); }
+
+@media(max-width:600px){
+  header{ padding:0 20px; }
+  footer{ padding:16px 20px; }
+  .card{ padding:36px 28px; }
+}
 </style>
 </head>
 <body>
 
-<!-- ── HEADER ── -->
 <header>
-  <div class="logo" onclick="location.href='index.html'">
-    <div class="logo-icon">🦷</div>
-    <div class="logo-text">Ultra Report <span>Dental Camp System</span></div>
-  </div>
+  <a class="logo" href="index.html">
+    <div class="logo-mark">🦷</div>
+    <div>
+      <div class="logo-name">Ultra Report</div>
+      <span class="logo-sub">Dental Camp System</span>
+    </div>
+  </a>
   <nav>
-    <a class="nav-link" href="index.html">🏠 Home</a>
-    <div class="nav-divider"></div>
-    <a class="nav-link" href="userlogin.html">👤 User Login</a>
-    <a class="nav-link active" href="adminlogin.html">🔐 Admin</a>
+    <a class="nav-pill" href="index.html">Home</a>
+    <div class="nav-sep"></div>
+    <a class="nav-pill" href="userlogin.html">👤 User Login</a>
+    <a class="nav-pill active" href="adminlogin.html">🔐 Admin</a>
   </nav>
 </header>
 
-<!-- ── LOGIN CARD ── -->
-<div class="center">
-  <div class="box">
-    <div class="box-icon">🔐</div>
-    <h2>Admin Login</h2>
-    <p>Restricted access — authorised personnel only</p>
-    <input id="user" placeholder="Username">
-    <input id="pass" type="password" placeholder="Password">
-    <button onclick="login()">Login</button>
-    <p id="msg"></p>
+<div class="page">
+  <div class="card">
+    <div class="card-badge"><span></span> Restricted Access</div>
+    <div class="card-title">Admin Login</div>
+    <div class="card-sub">Authorised personnel only</div>
+
+    <label class="field-label">Username</label>
+    <div class="field-wrap">
+      <input id="user" placeholder="Admin username" autocomplete="username">
+    </div>
+    <label class="field-label">Password</label>
+    <div class="field-wrap">
+      <input id="pass" type="password" placeholder="Admin password" autocomplete="current-password">
+    </div>
+    <button class="submit-btn" onclick="login()">Login to Dashboard</button>
+    <div id="msg"></div>
   </div>
 </div>
 
-<!-- ── FOOTER ── -->
 <footer>
-  <div class="footer-left">
-    <span class="footer-dot"></span>
-    <span>© 2026 <strong>Ultra College</strong> — Dental Camp Report System</span>
-  </div>
-  <div class="footer-right">
+  <span class="footer-brand-name">© 2026 <strong>Ultra College</strong> — Dental Camp Report System</span>
+  <div class="footer-links">
     <a href="index.html">Home</a>
     <a href="userlogin.html">User Login</a>
     <a href="adminlogin.html">Admin Login</a>
@@ -93,7 +203,7 @@ async function login() {
   const p = document.getElementById("pass").value.trim();
   if (!u || !p) { document.getElementById("msg").innerText = "Please fill all fields"; return; }
 
-  document.querySelector("button").textContent = "Logging in...";
+  document.querySelector("button").textContent = "Logging in…";
   document.querySelector("button").disabled = true;
 
   try {
@@ -105,21 +215,19 @@ async function login() {
     });
     const data = await res.json();
     if (data.success) {
-      // ✅ Redirect to BACKEND protected route — not GitHub Pages
       window.location.href = BASE + "/page/admin";
     } else {
       document.getElementById("msg").innerText = "Invalid Admin Credentials";
-      document.querySelector("button").textContent = "Login";
+      document.querySelector("button").textContent = "Login to Dashboard";
       document.querySelector("button").disabled = false;
     }
   } catch (err) {
-    document.getElementById("msg").innerText = "Server error. Try again.";
-    document.querySelector("button").textContent = "Login";
+    document.getElementById("msg").innerText = "Server error. Please try again.";
+    document.querySelector("button").textContent = "Login to Dashboard";
     document.querySelector("button").disabled = false;
   }
 }
 
-// Allow Enter key to submit
 document.addEventListener("keydown", (e) => { if (e.key === "Enter") login(); });
 </script>
 </body>
